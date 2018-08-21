@@ -91,3 +91,37 @@ def test_listar_tarefas_deve_apresentar_tarefas_nao_finalizadas_primeiro():
         primeira_task, segunda_task = data
         assert primeira_task['titulo'] == 'tarefa 2'
         assert segunda_task['titulo'] == 'tarefa 1'
+
+
+# Removendo tarefas
+def test_deletar_tarefa_utiliza_verbo_delete():
+    tarefas.clear()
+    with app.test_client() as cliente:
+        resposta = cliente.delete('/task/1')
+        assert resposta.status_code != 405
+
+
+def test_remover_tarefa_existente_retorna_204():
+    tarefas.clear()
+    tarefas.append({'id': 1, 'titulo': 'titulo',
+                    'descricao': 'descricao', 'estado': False})
+    cliente = app.test_client()
+    resposta = cliente.delete('/task/1', content_type='application/json')
+    assert resposta.status_code == 204
+    assert resposta.data == b''
+
+
+def test_remover_tarefa_existente_remove_tarefa_da_lista():
+    tarefas.clear()
+    tarefas.append({'id': 1, 'titulo': 'titulo',
+                    'descricao': 'descricao', 'estado': False})
+    cliente = app.test_client()
+    cliente.delete('/task/1', content_type='application/json')
+    assert len(tarefas) == 0
+
+
+def test_remover_tarefa_nao_existente():
+    tarefas.clear()
+    cliente = app.test_client()
+    resposta = cliente.delete('/task/1', content_type='application/json')
+    assert resposta.status_code == 404

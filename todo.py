@@ -89,3 +89,30 @@ def criar():
 @app.route('/task')
 def listar():
     return jsonify(sorted(tarefas, key=itemgetter('estado')))
+
+
+# Removendo tarefas
+@app.route('/task/<int:id_tarefa>', methods=['DELETE'])
+def remover(id_tarefa):
+    return ''
+
+
+@app.route('/task/<int:id_tarefa>', methods=['DELETE'])
+def remover(id_tarefa):
+    return '', 204
+
+
+@app.route('/task/<int:id_tarefa>', methods=['DELETE'])
+def remover(id_tarefa):
+    tarefa = [tarefa for tarefa in tarefas if tarefa['id'] == id_tarefa]
+    tarefas.remove(tarefa[0])
+    return '', 204
+
+
+@app.route('/task/<int:id_tarefa>', methods=['DELETE'])
+def remover(id_tarefa):
+    tarefa = [tarefa for tarefa in tarefas if tarefa['id'] == id_tarefa]
+    if not tarefa:
+        abort(404)
+    tarefas.remove(tarefa[0])
+    return '', 204

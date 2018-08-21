@@ -147,3 +147,61 @@ def test_detalhar_tarefa_nao_existente():
     cliente = app.test_client()
     resposta = cliente.get('/task/1', content_type='application/json')
     assert resposta.status_code == 404
+
+
+# Entregando tarefas
+def test_atualizando_uma_tarefa_existente():
+    tarefas.clear()
+    tarefas.append({'id': 1, 'titulo': 'titulo',
+                    'descricao': 'descricao', 'estado': False})
+    cliente = app.test_client()
+    resposta = cliente.put('/task/1', data=json.dumps(
+        {'titulo': 'titulo atualizado',
+         'descricao': 'descricao atualizada', 'estado': True}
+    ),
+        content_type='application/json')
+    data = json.loads(resposta.data.decode('utf-8'))
+    assert resposta.status_code == 200
+    assert data['id'] == 1
+    assert data['titulo'] == 'titulo atualizado'
+    assert data['descricao'] == 'descricao atualizada'
+    assert data['estado'] is True
+
+
+def test_atualizando_uma_tarefa_nao_existente():
+    tarefas.clear()
+    cliente = app.test_client()
+    resposta = cliente.put('/tarefa/1', data=json.dumps(
+        {'titulo': 'titulo atualizado',
+         'decricao': 'descricao atualizada', 'estado': True}
+    ),
+        content_type='application/json')
+    assert resposta.status_code == 404
+
+
+def test_atualizando_uma_tarefa_com_campos_invalidos():
+    tarefas.clear()
+    tarefas.append({'id': 1, 'titulo': 'titulo',
+                    'descricao': 'descricao', 'estado': False})
+    cliente = app.test_client()
+    # sem estado
+    resposta = cliente.put('/tarefa/1', data=json.dumps(
+        {'titulo': 'titulo atualizado',
+         'decricao': 'descricao atualizada'}
+    ),
+        content_type='application/json')
+    assert resposta.status_code == 400
+    # sem descrição
+    resposta = cliente.put('/tarefa/1', data=json.dumps(
+        {'titulo': 'titulo atualizado',
+         'estado': False}
+    ),
+        content_type='application/json')
+    assert resposta.status_code == 400
+    # sem titulo
+    resposta = cliente.put('/tarefa/1', data=json.dumps(
+        {'descricao': 'descricao atualizado',
+         'estado': False}
+    ),
+        content_type='application/json')
+    assert resposta.status_code == 400

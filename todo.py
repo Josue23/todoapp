@@ -131,3 +131,49 @@ def detalhar(id_tarefa):
     if not tarefa:
         abort(404)
     return jsonify(tarefa[0])
+
+
+# Entregando tarefas
+@app.route('/tarefa/<int:id_tarefa>', methods=['PUT'])
+def atualizar(id_tarefa):
+    tarefa = [tarefa for tarefa in tarefas if tarefa['id'] == id_tarefa]
+    titulo = request.json.get('titulo')
+    descricao = request.json.get('descricao')
+    estado = request.json.get('estado')
+    tarefa_escolhida = tarefa[0]
+    tarefa_escolhida['titulo'] = titulo or tarefa_escolhida['titulo']
+    tarefa_escolhida['descricao'] = descricao or tarefa_escolhida['descricao']
+    tarefa_escolhida['estado'] = estado or tarefa_escolhida['estado']
+    return jsonify(tarefa_escolhida)
+
+
+@app.route('/tarefa/<int:id_tarefa>', methods=['PUT'])
+def atualizar(id_tarefa):
+    tarefa = [tarefa for tarefa in tarefas if tarefa['id'] == id_tarefa]
+    titulo = request.json.get('titulo')
+    descricao = request.json.get('descricao')
+    entregue = request.json.get('entregue')
+    if not tarefa:
+        abort(404)
+    tarefa_escolhida = tarefa[0]
+    tarefa_escolhida['titulo'] = titulo or tarefa_escolhida['titulo']
+    tarefa_escolhida['descricao'] = descricao or tarefa_escolhida['descricao']
+    tarefa_escolhida['entregue'] = entregue or tarefa_escolhida['entregue']
+    return jsonify(tarefa_escolhida)
+
+
+@app.route('/tarefa/<int:id_tarefa>', methods=['PUT'])
+def atualizar(id_tarefa):
+    tarefa = [tarefa for tarefa in tarefas if tarefa['id'] == id_tarefa]
+    titulo = request.json.get('titulo')
+    descricao = request.json.get('descricao')
+    estado = request.json.get('estado')
+    if not tarefa:
+        abort(404)
+    if not descricao or not titulo or estado is None:
+        abort(400)
+    tarefa_escolhida = tarefa[0]
+    tarefa_escolhida['titulo'] = titulo or tarefa_escolhida['titulo']
+    tarefa_escolhida['descricao'] = descricao or tarefa_escolhida['descricao']
+    tarefa_escolhida['estado'] = estado or tarefa_escolhida['estado']
+    return jsonify(tarefa_escolhida)

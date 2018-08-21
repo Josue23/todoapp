@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from operator import itemgetter
 
 app = Flask('TODO')
 tarefas = []
@@ -83,3 +84,8 @@ def criar():
     }
     tarefas.append(tarefa)
     return jsonify(tarefa), 201
+
+
+@app.route('/task')
+def listar():
+    return jsonify(sorted(tarefas, key=itemgetter('estado')))

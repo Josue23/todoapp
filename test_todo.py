@@ -26,22 +26,20 @@ def test_criar_tarefa_aceita_post():
 
 
 def test_criar_tarefa_retorna_tarefa_inserida():
-  tarefas.clear()
-  cliente = app.test_client()
-  # realiza a requisição utilizando o verbo POST
-  resposta = cliente.post('/task', data=json.dumps({
-    'titulo': 'titulo',
-    'descricao': 'descricao'
-  }),
-  content_type='application/json'
-  )
-  # é realizada a análise e transformação para objeto python da resposta
-  data = json.loads(resposta.data.decode('utf-8'))
-  assert data['id'] == 1
-  assert  data['titulo'] == 'titulo'
-  assert data['descricao'] == 'descricao'
-  # quando a comparação é com True, False ou None, utiliza-se o "is"
-  assert data['estado'] is False
+    tarefas.clear()
+    cliente = app.test_client()
+    # realiza a requisição utilizando o verbo POST
+    resposta = cliente.post('/task', data=json.dumps({
+        'titulo': 'titulo',
+        'descricao': 'descricao'}),
+        content_type='application/json')
+    # é realizada a análise e transformação para objeto python da resposta
+    data = json.loads(resposta.data.decode('utf-8'))
+    assert data['id'] == 1
+    assert data['titulo'] == 'titulo'
+    assert data['descricao'] == 'descricao'
+    # qaundo a comparação é com True, False ou None, utiliza-se o "is"
+    assert data['estado'] is False
 
 
 def test_criar_tarefa_codigo_de_status_retornado_deve_ser_201():
@@ -79,3 +77,17 @@ def test_criar_tarefa_sem_titulo():
         {'descricao': 'descricao'}),
         content_type='application/json')
     assert resposta.status_code == 400
+
+
+def test_listar_tarefas_deve_apresentar_tarefas_nao_finalizadas_primeiro():
+    tarefas.clear()
+    tarefas.append({'id': 1, 'titulo': 'tarefa 1', 'descricao': 'tarefa de numero 1',
+                    'estado': True})
+    tarefas.append({'id': 2, 'titulo': 'tarefa 2', 'descricao': 'tarefa de numero 2',
+                    'estado': False})
+    with app.test_client() as cliente:
+        resposta = cliente.get('/task')
+        data = json.loads(resposta.data.decode('utf-8'))
+        primeira_task, segunda_task = data
+        assert primeira_task['titulo'] == 'tarefa 2'
+        assert segunda_task['titulo'] == 'tarefa 1'

@@ -10,15 +10,20 @@ def listar():
 
 @app.route('/task', methods=['POST'])
 def criar():
-  titulo = request.json.get('titulo')
-  descricao = request.json.get('descricao')
-  tarefa = {
-    'id': len(tarefas) + 1,
-    'titulo': titulo,
-    'descricao': descricao,
-    'estado': False
-  }
-  return jsonify(tarefa)
+    return jsonify()
+
+
+@app.route('/task', methods=['POST'])
+def criar():
+    titulo = request.json.get('titulo')
+    descricao = request.json.get('descricao')
+    tarefa = {
+        'id': len(tarefas) + 1,
+        'titulo': titulo,
+        'descricao': descricao,
+        'estado': False
+    }
+    return jsonify(tarefa)
 
 
 @app.route('/task', methods=['POST'])
